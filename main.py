@@ -11,6 +11,7 @@ detector = HandDetector(maxHands = 2, detectionCon=0.8)
 while True:
     ret,frame = v.read()
     flipped_frame = cv.flip(frame,1)  #flips horizontally
+    cv.line(flipped_frame,(0,250),(800,250),(0,255,0),1)
     hands,flipped_frame = detector.findHands(flipped_frame)
     if hands:
         hand = hands[0]
