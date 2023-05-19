@@ -14,7 +14,7 @@ while True:
     
     ret,frame = v.read()
     flipped_frame = cv.flip(frame,1)  #flips horizontally
-    hands,flipped_frame = detector.findhands(flipped_frame)
+    hands,flipped_frame = detector.findHands(flipped_frame)
     small_v = cv.resize(flipped_frame,(150,100))
     y = slide.shape[0] - small_v.shape[0] - 10   
     x = slide.shape[1] - small_v.shape[1] - 10   
