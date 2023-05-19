@@ -9,19 +9,26 @@ slide = cv.resize(slide,(800,600))
 v = cv.VideoCapture(0)
 detector = HandDetector(maxHands = 1, detectionCon=0.8)
 lineThreshold = 250
+
+clickCounter = 0 
+clickLimit = 10 
+clickCheck = False
+
 while True:
     ret,frame = v.read()
     flipped_frame = cv.flip(frame,1)  #flips horizontally
     cv.line(flipped_frame,(0,lineThreshold),(800,lineThreshold),(0,255,0),1)
     hands,flipped_frame = detector.findHands(flipped_frame)
-    if hands:
+    if hands and clickCheck==False:
         hand = hands[0]
         fingers = detector.fingersUp(hand)
         print(fingers)
         cx,cy = hand['center']
         if cy <= lineThreshold:
+            clickCheck = True
             if fingers == [1,0,0,0,0]:
                 # print('Left')
+                
                 if i>0:
                     i-=1 
 
@@ -34,12 +41,18 @@ while True:
                 
             if fingers == [0,0,0,0,1]:
                 # print('Right')
+                clickCheck = True
                 if i< len(img_list)-1:
                     i+=1 
                     slide = cv.imread("Slides/"+img_list[i])
                     slide = cv.resize(slide,(800,600))
                 else:
                     print("This is the end of the presentation.")
+    if clickCheck:
+        clickCounter+=1 
+        if clickCounter > clickLimit:
+            clickCounter = 0 
+            clickCheck = False 
                 
 
                 
