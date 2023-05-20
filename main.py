@@ -13,9 +13,9 @@ v = cv.VideoCapture(0)
 detector = HandDetector(maxHands = 1, detectionCon=0.8)
 lineThreshold = height//3
 
-# clickCounter = 0 
-# clickLimit = 5
-# clickCheck = False
+clickCounter = 0 
+clickLimit = 5
+clickCheck = False
 annotations = [[]]
 annotationStart = False 
 annotationCount = -1
@@ -31,7 +31,7 @@ while True:
     y = slide.shape[0] - small_v.shape[0] - 10   
     x = slide.shape[1] - small_v.shape[1] - 10   
     slide[y:y+small_v.shape[0],x:x+small_v.shape[1]] = small_v    # Selecting the region on the background image for placing video. 
-    if hands:
+    if hands and clickCheck==False:
         hand = hands[0]
         fingers = detector.fingersUp(hand)
         print(fingers)
@@ -43,7 +43,7 @@ while True:
         yVal = int(np.interp(lmlist[8][1], [0, height//2], [0, height]))
         indexFinger = xVal,yVal
         if cy <= lineThreshold:
-            # clickCheck = True
+            clickCheck = True
             if fingers == [1,0,0,0,0]:
                 print('Left')
 
@@ -64,7 +64,7 @@ while True:
 
             if fingers == [0,0,0,0,1]:
                 print('Right')
-                # clickCheck = True
+                clickCheck = True
                 if i< len(img_list)-1:
                     i+=1 
                     annotations = [[]]
@@ -94,7 +94,7 @@ while True:
                 annotationCount = -1 
                 slide = cv.imread("Slides/"+img_list[i])
                 slide = cv.resize(slide,(width,height))
-                # buttonPressed = True
+                clickCheck = True
 
                 
 
@@ -102,11 +102,11 @@ while True:
             for j in range(len(annotations[k])):
                 if j!=0:
                     cv.line(slide,annotations[k][j-1],annotations[k][j],(0,255,0),12)
-    # if clickCheck:
-    #     clickCounter+=1 
-    #     if clickCounter > clickLimit:
-    #         clickCounter = 0 
-    #         clickCheck = False 
+    if clickCheck:
+        clickCounter+=1 
+        if clickCounter > clickLimit:
+            clickCounter = 0 
+            clickCheck = False 
                 
 
     key = cv.waitKey(1)
