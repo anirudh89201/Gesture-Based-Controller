@@ -16,7 +16,9 @@ lineThreshold = height//3
 # clickCounter = 0 
 # clickLimit = 5
 # clickCheck = False
-annotations = []
+annotations = [[]]
+annotationStart = False 
+annotationCount = -1
 while True:
     ret,frame = v.read()
     flipped_frame = cv.flip(frame,1)  #flips horizontally
@@ -44,9 +46,13 @@ while True:
             # clickCheck = True
             if fingers == [1,0,0,0,0]:
                 print('Left')
+
                 
                 if i>0:
-                    i-=1 
+                    i-=1
+                    annotations = [[]]
+                    annotationStart = False 
+                    annotationCount = -1 
 
                     # print(i)
                     slide = cv.imread("Slides/"+img_list[i])
@@ -60,6 +66,9 @@ while True:
                 # clickCheck = True
                 if i< len(img_list)-1:
                     i+=1 
+                    annotations = [[]]
+                    annotationStart = False 
+                    annotationCount = -1
                     slide = cv.imread("Slides/"+img_list[i])
                     slide = cv.resize(slide,(width,height))
                 else:
@@ -67,12 +76,20 @@ while True:
         # if fingers == [0,1,1,0,0]:
             # cv.circle(slide,indexFinger,5,(0,0,255),cv.FILLED)
         if fingers == [0,1,0,0,0]:
-            cv.circle(slide,indexFinger,5,(0,0,255),cv.FILLED)
-            annotations.append(indexFinger)
+            if annotationStart is False:
+                annotationStart = True 
+                annotationCount +=1 
+                annotations.append([])
 
-        for j in range(len(annotations)):
-            if j!=0:
-                cv.line(slide,annotations[j-1],annotations[j],(0,255,0),12)
+            cv.circle(slide,indexFinger,5,(0,0,255),cv.FILLED)
+            annotations[annotationCount].append(indexFinger)
+        else:
+            annotationStart = False 
+ 
+        for k in range(len(annotations)):
+            for j in range(len(annotations[k])):
+                if j!=0:
+                    cv.line(slide,annotations[k][j-1],annotations[k][j],(0,255,0),12)
     # if clickCheck:
     #     clickCounter+=1 
     #     if clickCounter > clickLimit:
