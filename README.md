@@ -17,7 +17,7 @@ The Gesture-Based Controller is designed to be compatible with a wide range of p
 # **Easy Integration**
 Integrating the Gesture-Based Controller into your projects is straightforward. We provide a comprehensive software development kit (SDK) with libraries and APIs, along with detailed documentation and code examples to assist developers in implementing gesture-based interactions.
 
-# **Robust and Accurate Performance **
+# **Robust and Accurate Performance**
 The controller's algorithms are optimized for robust performance, even in challenging environments. It can handle variations in lighting conditions, different hand sizes, and complex gestures with high accuracy.
 
 # **Low Latency**
