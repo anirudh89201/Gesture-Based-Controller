@@ -61,6 +61,7 @@ while True:
                 else:
                     print("This is the beginning slide of this presentation.")
                 
+
             if fingers == [0,0,0,0,1]:
                 print('Right')
                 # clickCheck = True
@@ -73,8 +74,8 @@ while True:
                     slide = cv.resize(slide,(width,height))
                 else:
                     print("This is the end of the presentation.")
-        # if fingers == [0,1,1,0,0]:
-            # cv.circle(slide,indexFinger,5,(0,0,255),cv.FILLED)
+        if fingers == [0,1,1,0,0]:
+            cv.circle(slide,indexFinger,5,(0,0,255),cv.FILLED)
         if fingers == [0,1,0,0,0]:
             if annotationStart is False:
                 annotationStart = True 
@@ -85,7 +86,18 @@ while True:
             annotations[annotationCount].append(indexFinger)
         else:
             annotationStart = False 
- 
+
+        if fingers == [0,1,1,1,0]:
+            if annotations:
+                annotations = [[]]
+                annotationStart = False 
+                annotationCount = -1 
+                slide = cv.imread("Slides/"+img_list[i])
+                slide = cv.resize(slide,(width,height))
+                # buttonPressed = True
+
+                
+
         for k in range(len(annotations)):
             for j in range(len(annotations[k])):
                 if j!=0:
