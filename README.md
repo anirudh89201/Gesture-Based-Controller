@@ -11,7 +11,7 @@ The controller utilizes high-resolution sensors and cameras to track the user's 
 
 Users can define and customize their own gestures to suit their specific needs. This flexibility allows for personalized and efficient control over various applications and systems.
 
-# **Multi-Platform Compatibility **
+# **Multi-Platform Compatibility**
 The Gesture-Based Controller is designed to be compatible with a wide range of platforms, including desktop computers, mobile devices, gaming consoles, virtual reality systems, and more. It provides a unified gesture interface across different platforms.
 
 # **Easy Integration**
