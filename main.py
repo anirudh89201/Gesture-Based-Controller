@@ -13,14 +13,16 @@ v = cv.VideoCapture(0)
 detector = HandDetector(maxHands = 1, detectionCon=0.8)
 lineThreshold = height//3
 
-# clickCounter = 0 
-# clickLimit = 5
-# clickCheck = False
+clickCounter = 0 
+clickLimit = 5
+clickCheck = False
 zoom_in_factor,zoom_out_factor = 1.0,1.0;
 annotations = [[]]
 annotationStart = False 
 annotationCount = -1
 while True:
+    slide = cv.imread("Slides/"+img_list[i])
+    slide = cv.resize(slide,(width,height))
     ret,frame = v.read()
     flipped_frame = cv.flip(frame,1)  #flips horizontally
     cv.line(flipped_frame,(0,lineThreshold),(width,lineThreshold),(0,255,0),1)
@@ -32,21 +34,22 @@ while True:
     y = slide.shape[0] - small_v.shape[0] - 10   
     x = slide.shape[1] - small_v.shape[1] - 10   
     slide[y:y+small_v.shape[0],x:x+small_v.shape[1]] = small_v    # Selecting the region on the background image for placing video. 
-    if hands:
+    if hands and clickCheck==False:
+    # if hands:
         hand = hands[0]
         fingers = detector.fingersUp(hand)
         print(fingers)
         cx,cy = hand['center']
         lmlist = hand['lmList']
-        # xVal = int(np.interp(lmlist[8][0],[width//2,width],[0,width]))
-        # yVal = int(np.interp(lmlist[8][1],[150,height-150],[0,height]))
         xVal = int(np.interp(lmlist[8][0], [width//2, width], [0, width+width]))
         yVal = int(np.interp(lmlist[8][1], [0, height//2], [0, height]))
         indexFinger = xVal,yVal
         if cy <= lineThreshold:
-            # clickCheck = True
+            clickCheck = True
             if fingers == [1,0,0,0,0]:
                 print('Left')
+
+                
                 if i>0:
                     i-=1
                     annotations = [[]]
@@ -59,11 +62,20 @@ while True:
             
                 else:
                     print("This is the beginning slide of this presentation.")
+            if fingers == [1,1,0,0,0]:
+                if zoom_in_factor<1.4:
+                    zoom_in_factor = zoom_in_factor + 0.2;
+                    slide = cv.resize(slide,None,fx=zoom_in_factor,fy=zoom_in_factor);
+            if fingers == [0,0,0,0,0]:
+                if zoom_out_factor > 0.6:
+                    zoom_out_factor = zoom_out_factor - 0.2;
+                    slide = cv.resize(slide,None,fx=zoom_out_factor,fy=zoom_out_factor);
+     
                 
 
             if fingers == [0,0,0,0,1]:
                 print('Right')
-                # clickCheck = True
+                clickCheck = True
                 if i< len(img_list)-1:
                     i+=1 
                     annotations = [[]]
@@ -93,28 +105,19 @@ while True:
                 annotationCount = -1 
                 slide = cv.imread("Slides/"+img_list[i])
                 slide = cv.resize(slide,(width,height))
-                # buttonPressed = True
-        if fingers == [1,1,0,0,0]:
-            if zoom_in_factor<1.2:
-                zoom_in_factor = zoom_in_factor + 0.2;
-                slide = cv.resize(slide,None,fx=zoom_in_factor,fy=zoom_in_factor);
-            # cv.imshow("frame",frame);
-            zoom_out_factor = zoom_in_factor;
-        if fingers == [0,0,0,0,0]:
-            if zoom_out_factor > 0.8:
-                zoom_out_factor = zoom_out_factor - 0.2;
-                slide = cv.resize(slide,None,fx=zoom_out_factor,fy=zoom_out_factor);
-            zoom_in_factor = zoom_out_factor;
+                clickCheck = True
+
+                
 
         for k in range(len(annotations)):
             for j in range(len(annotations[k])):
                 if j!=0:
-                    cv.line(slide,annotations[k][j-1],annotations[k][j],(0,255,0),12)
-    # if clickCheck:
-    #     clickCounter+=1 
-    #     if clickCounter > clickLimit:
-    #         clickCounter = 0 
-    #         clickCheck = False 
+                    cv.line(slide,annotations[k][j-1],annotations[k][j],(0,255,0),6)
+    if clickCheck:
+        clickCounter+=1 
+        if clickCounter > clickLimit:
+            clickCounter = 0 
+            clickCheck = False 
                 
 
     key = cv.waitKey(1)
